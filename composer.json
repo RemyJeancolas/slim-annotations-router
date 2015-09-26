@@ -16,7 +16,9 @@
         }
     ],
     "autoload": [
-        "psr-4": { "Ergy\\Annotations\\": "src/" }
+        "psr-4": {
+            "Ergy\\Annotations\\": "src/"
+        }
     ],
     "minimum-stability": "dev"
 }
