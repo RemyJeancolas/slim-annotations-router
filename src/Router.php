@@ -1,5 +1,5 @@
 <?php
-namespace Ergy\Annotations;
+namespace Ergy\Slim\Annotations;
 
 use FastRoute\DataGenerator;
 use FastRoute\RouteParser;
