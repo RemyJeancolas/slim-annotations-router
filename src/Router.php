@@ -85,12 +85,12 @@ class Router extends \Slim\Router
 
         if ($continueExecution !== false) {
             if (count($args) > 0) {
-                call_user_func_array(array($controller, $calledMethod), $args);
+                $continueExecution = call_user_func_array(array($controller, $calledMethod), $args);
             } else {
-                call_user_func(array($controller, $calledMethod));
+                $continueExecution = call_user_func(array($controller, $calledMethod));
             }
 
-            if (method_exists($controller, 'afterExecuteRoute')) {
+            if ($continueExecution !== false && method_exists($controller, 'afterExecuteRoute')) {
                 if ($routeInfo === null) {
                     $routeInfo = new RouteInfo(self::$_slimInstance->request->getMethod(), $calledClass, $calledMethod, $args);
                 }
