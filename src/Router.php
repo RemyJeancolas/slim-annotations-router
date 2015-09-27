@@ -77,8 +77,10 @@ class Router extends \Slim\Router
     {
         $continueExecution = true;
         $controller = new $calledClass;
+        $routeInfo = null;
         if (method_exists($controller, 'beforeExecuteRoute')) {
-            $continueExecution = $controller->beforeExecuteRoute();
+            $routeInfo = new RouteInfo(self::$_slimInstance->request->getMethod(), $calledClass, $calledMethod, $args);
+            $continueExecution = $controller->beforeExecuteRoute($routeInfo);
         }
 
         if ($continueExecution !== false) {
@@ -89,7 +91,10 @@ class Router extends \Slim\Router
             }
 
             if (method_exists($controller, 'afterExecuteRoute')) {
-                $controller->afterExecuteRoute();
+                if ($routeInfo === null) {
+                    $routeInfo = new RouteInfo(self::$_slimInstance->request->getMethod(), $calledClass, $calledMethod, $args);
+                }
+                $controller->afterExecuteRoute($routeInfo);
             }
         }
     }
