@@ -3,6 +3,7 @@ namespace Ergy\Slim\Annotations;
 
 use FastRoute\DataGenerator;
 use FastRoute\RouteParser;
+use Psr\Http\Message\ResponseInterface;
 
 class Router extends \Slim\Router
 {
@@ -72,29 +73,36 @@ class Router extends \Slim\Router
      * @param string $calledClass
      * @param string $calledMethod
      * @param array $args
+     * @return bool|\Psr\Http\Message\ResponseInterface
      */
     public function triggerControllerAction($calledClass, $calledMethod, $args)
     {
-        $continueExecution = true;
         $controller = new $calledClass;
         $routeInfo = null;
         if (method_exists($controller, 'beforeExecuteRoute')) {
             $routeInfo = new RouteInfo(self::$_slimInstance->request->getMethod(), $calledClass, $calledMethod, $args);
-            $continueExecution = $controller->beforeExecuteRoute($routeInfo);
+            $result = $controller->beforeExecuteRoute($routeInfo);
+            if ($result === false || $result instanceof ResponseInterface) {
+                return $result;
+            }
         }
 
-        if ($continueExecution !== false) {
-            if (count($args) > 0) {
-                $continueExecution = call_user_func_array(array($controller, $calledMethod), $args);
-            } else {
-                $continueExecution = call_user_func(array($controller, $calledMethod));
-            }
+        if (count($args) > 0) {
+            $result = call_user_func_array(array($controller, $calledMethod), $args);
+        } else {
+            $result = call_user_func(array($controller, $calledMethod));
+        }
+        if ($result === false || $result instanceof ResponseInterface) {
+            return $result;
+        }
 
-            if ($continueExecution !== false && method_exists($controller, 'afterExecuteRoute')) {
-                if ($routeInfo === null) {
-                    $routeInfo = new RouteInfo(self::$_slimInstance->request->getMethod(), $calledClass, $calledMethod, $args);
-                }
-                $controller->afterExecuteRoute($routeInfo);
+        if (method_exists($controller, 'afterExecuteRoute')) {
+            if ($routeInfo === null) {
+                $routeInfo = new RouteInfo(self::$_slimInstance->request->getMethod(), $calledClass, $calledMethod, $args);
+            }
+            $result = $controller->afterExecuteRoute($routeInfo);
+            if ($result instanceof ResponseInterface) {
+                return $result;
             }
         }
     }
@@ -200,8 +208,7 @@ class Router extends \Slim\Router
                     continue;
                 }
 
-                $methodComments = $m->getDocComment();
-                if (preg_match('/@Route\(\s*["\']([^\'"]*)["\'][^)]*\)/', $methodComments, $matches) === 1) {
+                if (preg_match('/@Route\(\s*["\']([^\'"]*)["\'][^)]*\)/', $m->getDocComment(), $matches) === 1) {
                     $routePath = $matches[1];
 
                     $route = $matches[0];
@@ -215,7 +222,7 @@ class Router extends \Slim\Router
                         $routeName = $matches[1];
                     }
 
-                    $result .= '$this->map(['.$methods.'], \''.$prefix.$routePath.'\', function($request, $response, $args) { $this->triggerControllerAction(\''.$className.'\', \''.$m->name.'\', $args); })';
+                    $result .= '$this->map(['.$methods.'], \''.$prefix.$routePath.'\', function($request, $response, $args) { return $this->triggerControllerAction(\''.$className.'\', \''.$m->name.'\', $args); })';
                     if ($routeName !== null) {
                         $result .= '->setName(\''.$routeName.'\')';
                     }

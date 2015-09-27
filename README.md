@@ -135,8 +135,9 @@ By opening the url **http://your_site_url/home/hello/foobar**, you should see "b
 
 ### Operation cancellation
 Previous hooks allow you to cancel operations if needed :
-* You can cancel execution of current route and *afterExecuteRoute* method by returning *false* in the method *beforeExecuteRoute*.
-* You can cancel the call to *afterExecuteRoute* method by returning *false* in the current route method.
+* You can cancel execution of current route and *afterExecuteRoute* method by returning either *false* or an instance of *\Psr\Http\Message\ResponseInterface* in the method *beforeExecuteRoute*.
+
+* You can cancel the call to *afterExecuteRoute* method by returning either *false* or an instance of *\Psr\Http\Message\ResponseInterface* in the current route method.
 
 For example :
 ```php
