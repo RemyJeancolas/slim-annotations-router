@@ -5,8 +5,8 @@ Controller and annotations based router for Slim Framework V3
 
 ## Installation
 Via [Composer](https://getcomposer.org/) :
-```
-composer require ergy/slim-annotations-router "1.0"
+```bash
+composer require ergy/slim-annotations-router
 ```
 ## Documentation
 Available soon
