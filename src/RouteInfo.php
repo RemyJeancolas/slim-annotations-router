@@ -3,10 +3,10 @@ namespace Ergy\Slim\Annotations;
 
 class RouteInfo
 {
-    protected $method;
-    protected $controller;
-    protected $action;
-    protected $params;
+    public $method;
+    public $controller;
+    public $action;
+    public $params;
 
     public function __construct($method, $controller, $action, $params)
     {

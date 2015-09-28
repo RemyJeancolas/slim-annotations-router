@@ -51,7 +51,7 @@ The **@Route** object accepts the following syntaxes :
 Let's see an example :
 ```php
 /**
- * File /my/app/controllers/home.php
+ * File /my/app/controllers/homeController.php
  * @RoutePrefix("/home")
  */
 class HomeController
@@ -75,7 +75,7 @@ Extending this class allows you to retrieve a reference to the Slim dependency c
 Let's see an example with the previous class :
 ```php
 /**
- * File /my/app/controllers/home.php
+ * File /my/app/controllers/homeController.php
  * @RoutePrefix("/home")
  */
 class HomeController extends Ergy\Slim\Annotations\Controller
@@ -107,7 +107,7 @@ Implementing these methods in your controller (or one of its parent classes) all
 Example with the previous class :
 ```php
 /**
- * File /my/app/controllers/home.php
+ * File /my/app/controllers/homeController.php
  * @RoutePrefix("/home")
  */
 class HomeController
@@ -142,7 +142,7 @@ Previous hooks allow you to cancel operations if needed :
 For example :
 ```php
 /**
- * File /my/app/controllers/home.php
+ * File /my/app/controllers/homeController.php
  * @RoutePrefix("/home")
  */
 class HomeController
