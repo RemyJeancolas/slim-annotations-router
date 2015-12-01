@@ -80,7 +80,7 @@ class Router extends \Slim\Router
         $controller = new $calledClass;
         $routeInfo = null;
         if (method_exists($controller, 'beforeExecuteRoute')) {
-            $routeInfo = new RouteInfo(self::$_slimInstance->request->getMethod(), $calledClass, $calledMethod, $args);
+            $routeInfo = new RouteInfo(self::$_slimInstance->getContainer()->get('request')->getMethod(), $calledClass, $calledMethod, $args);
             $result = $controller->beforeExecuteRoute($routeInfo);
             if ($result === false || $result instanceof ResponseInterface) {
                 return $result;
