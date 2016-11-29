@@ -77,7 +77,12 @@ class Router extends \Slim\Router
      */
     public function triggerControllerAction($calledClass, $calledMethod, $args)
     {
-        $controller = new $calledClass;
+        try {
+            $controller =  self::$_slimInstance->getContainer()->get($calledClass);
+        } catch (\Exception $e) {
+            $controller = new $calledClass;
+        }
+        
         $routeInfo = null;
         if (method_exists($controller, 'beforeExecuteRoute')) {
             $routeInfo = new RouteInfo(self::$_slimInstance->getContainer()->get('request')->getMethod(), $calledClass, $calledMethod, $args);
